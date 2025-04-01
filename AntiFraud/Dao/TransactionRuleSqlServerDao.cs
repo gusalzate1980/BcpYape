@@ -1,6 +1,5 @@
 ﻿using AntiFraud.Dto;
 using DataBase;
-using System.Collections.Generic;
 
 namespace AntiFraud.Dao
 {

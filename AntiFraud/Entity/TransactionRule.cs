@@ -8,7 +8,10 @@ namespace AntiFraud.Entity
         private int _IndividualMaxAmount;
         private int _DailyMaxAmount;
         private int _TransactionId;
+        public int TransactionId { get { return _TransactionId; } }
+
         private bool _IsFraud;
+        private DateTime _TransactionDate;
 
         private List<Transaction> _sources;
         private List<Transaction> _Targets;
@@ -16,10 +19,10 @@ namespace AntiFraud.Entity
 
         private ITransactionRuleDao _dao;
 
-        public TransactionRule(int transactionId,int transactionValue,ITransactionRuleDao dao)
+        public TransactionRule(int transactionId,DateTime createAt,ITransactionRuleDao dao)
         { 
             _TransactionId      = transactionId;
-            _TransactionValue   = transactionValue;
+            _TransactionDate   = createAt;
             _dao =   dao;
 
             var rules = _dao.GetTransactionsRuleValues();
@@ -29,9 +32,9 @@ namespace AntiFraud.Entity
 
         private async void SetTransactionValues()
         {
-            Transaction transaction = new Transaction();
-            Task<List<Transaction>> taskSources =  Task.Run(()=>transaction.GetTodaySourceTransactionsByTransactionIdAsync(_TransactionId));
-            Task<List<Transaction>> taskTargets =  Task.Run(()=>transaction.GetTodayTargetTransactionsByTransactionIdAsync(_TransactionId));
+            Transaction transaction = new Transaction(_TransactionId);
+            Task<List<Transaction>> taskSources =  Task.Run(()=>transaction.GetSourceTransactions());
+            Task<List<Transaction>> taskTargets =  Task.Run(()=>transaction.GetTargetTransactions());
 
             _sources = await taskSources;
             _Targets = await taskTargets;

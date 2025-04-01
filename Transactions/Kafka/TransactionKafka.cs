@@ -64,41 +64,5 @@ namespace Transactions.Kafka
             }
         }
 
-        public static void StartListeningFromTransactionMessages(Action<AntifraudRequestValidationDto> onMessageReceived)
-        {
-            var config = new ConsumerConfig
-            {
-                BootstrapServers = _kafkaBroker,
-                GroupId = "anti_fraud_group",
-                AutoOffsetReset = AutoOffsetReset.Earliest
-            };
-
-            using (var consumer = new ConsumerBuilder<Null, AntifraudRequestValidationDto>(config).Build())
-            {
-                consumer.Subscribe(_transactionToAntiFraudTopic);
-
-                Task.Run(() =>
-                {
-                    while (true)
-                    {
-                        try
-                        {
-                            var cr = consumer.Consume();
-                            AntifraudRequestValidationDto response = cr.Value;
-
-                            onMessageReceived(response);
-                        }
-                        catch (ConsumeException e)
-                        {
-                            Console.WriteLine($"Error al consumir mensaje: {e.Error.Reason}");
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Error: {ex.Message}");
-                        }
-                    }
-                });
-            }
-        }
     }
 }

@@ -1,13 +1,12 @@
 ﻿using AntiFraud.Dao;
 using DataBase;
 
-namespace Transactions.Factory
+namespace AntiFraud.Factory
 {
-    public class TransactionFactory
+    public class TransactionRuleFactory
     {
-
         private DataBaseEngine _engine;
-        public TransactionFactory(DataBaseEngine engine)
+        public TransactionRuleFactory(DataBaseEngine engine)
         {
             _engine = engine;
         }

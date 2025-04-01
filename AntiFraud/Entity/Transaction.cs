@@ -2,17 +2,23 @@
 {
     public class Transaction
     {
-        public int _Value;
-        public DateTime _CreateDate;
+        private int _Value;
+        public DateTime CreateDate;
+        private int _TransactionId;
 
         public int Value { get { return _Value; } }
         
-        public async Task<List<Transaction>> GetTodaySourceTransactionsByTransactionIdAsync(int transactionId)
+        public Transaction(int transactionId)
+        {
+            _TransactionId = transactionId;
+        }
+
+        public List<Transaction> GetSourceTransactions()
         {
             return new List<Transaction>();
         }
 
-        public async Task<List<Transaction>> GetTodayTargetTransactionsByTransactionIdAsync(int transactionId)
+        public List<Transaction> GetTargetTransactions()
         {
             return new List<Transaction>();
         }

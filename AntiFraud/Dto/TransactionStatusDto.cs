@@ -17,4 +17,10 @@
         public int Id { set; get; }
         public bool IsFraud { set; get; }
     }
+    public class AntifraudRequestValidationDto
+    {
+        public int ExternalTransactionId { set; get; }
+        public DateTime CreatedAt { set; get; }
+    }
+
 }

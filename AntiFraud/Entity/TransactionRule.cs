@@ -33,8 +33,6 @@ namespace AntiFraud.Entity
             _Targets = await taskTargets;
         }
 
-        
-
         public TransactionStatusDto TransactionListener()
         {
             var config = new ConsumerConfig

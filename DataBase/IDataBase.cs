@@ -13,8 +13,8 @@ namespace DataBase
         void CloseConnection();
         List<T> ExecuteTableQuery<T>(string query) where T : new();
         List<T> ExecuteTableQuery<T>(string query, DataTable dataTable, string dataTableParameterName) where T : new();
-        T ExecuteScalarQuery<T>(string query);
+        T ExecuteScalarQuery<T>(string query, Dictionary<string, object> parameters);
 
-        void ExecuteNonQuery(string query);
+        void ExecuteNonQuery(string command, Dictionary<string, object> parameters);
     }
 }

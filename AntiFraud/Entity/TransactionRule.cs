@@ -1,5 +1,5 @@
-﻿using AntiFraud.Dto;
-using Confluent.Kafka;
+﻿using AntiFraud.Dao;
+using AntiFraud.Dto;
 
 namespace AntiFraud.Entity
 {
@@ -14,13 +14,17 @@ namespace AntiFraud.Entity
         private List<Transaction> _Targets;
         private int _TransactionValue;
 
-        private static string kafkaBroker = "localhost:9092"; // Dirección del broker de Kafka
-        private static string topicTransacciones = "transacciones-topic";
+        private ITransactionRuleDao _dao;
 
-        public TransactionRule(int transactionId,int transactionValue)
+        public TransactionRule(int transactionId,int transactionValue,ITransactionRuleDao dao)
         { 
-            _TransactionId = transactionId;
-            //obtiene valores de las reglas
+            _TransactionId      = transactionId;
+            _TransactionValue   = transactionValue;
+            _dao =   dao;
+
+            var rules = _dao.GetTransactionsRuleValues();
+            _IndividualMaxAmount = rules.IndividualMaxAmount;
+            _DailyMaxAmount = rules.DailyMaxAmount;
         }
 
         private async void SetTransactionValues()
@@ -31,43 +35,6 @@ namespace AntiFraud.Entity
 
             _sources = await taskSources;
             _Targets = await taskTargets;
-        }
-
-        public TransactionStatusDto TransactionListener()
-        {
-            var config = new ConsumerConfig
-            {
-                BootstrapServers = kafkaBroker,
-                GroupId = "grupo-anti-fraude",
-                AutoOffsetReset = AutoOffsetReset.Earliest
-            };
-
-            
-
-            using (var consumer = new ConsumerBuilder<Ignore, string>(config).Build())
-            {
-                consumer.Subscribe("anti-fraude-topic");
-
-                while (true)
-                {
-                    var consumeResult = consumer.Consume();
-                    string transaccion = consumeResult.Message.Value;
-
-                    this.SendValidationResult(this.IsFraud());
-
-                    
-                }
-            }
-        }
-
-        private void SendValidationResult(TransactionStatusDto resultado)
-        {
-            var config = new ProducerConfig { BootstrapServers = kafkaBroker };
-            using (var producer = new ProducerBuilder<Null, TransactionStatusDto>(config).Build())
-            {
-                var message = new Message<Null, TransactionStatusDto> { Value = resultado };
-                producer.Produce(topicTransacciones, message);
-            }
         }
 
         public TransactionStatusDto IsFraud()

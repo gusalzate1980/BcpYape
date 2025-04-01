@@ -59,10 +59,19 @@ public class SqlServer : IDataBase
         return results;
     }
 
-    public T ExecuteScalarQuery<T>(string query)
+    public T ExecuteScalarQuery<T>(string query, Dictionary<string, object> parameters)
     {
         using (SqlCommand command = new SqlCommand(query, this._connection))
         {
+            // Agregar parámetros a la consulta
+            if (parameters != null)
+            {
+                foreach (var param in parameters)
+                {
+                    command.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                }
+            }
+
             var result = command.ExecuteScalar();
             if (result == null || result == DBNull.Value)
             {
@@ -72,10 +81,19 @@ public class SqlServer : IDataBase
         }
     }
 
-    public void ExecuteNonQuery(string command)
+    public void ExecuteNonQuery(string command, Dictionary<string, object> parameters)
     {
         using (SqlCommand sqlCommand = new SqlCommand(command, this._connection))
         {
+            // Agregar parámetros a la consulta
+            if (parameters != null)
+            {
+                foreach (var param in parameters)
+                {
+                    sqlCommand.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                }
+            }
+
             sqlCommand.ExecuteNonQuery();
         }
     }

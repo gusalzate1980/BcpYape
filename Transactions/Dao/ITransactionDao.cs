@@ -1,8 +1,8 @@
-﻿namespace Transactions.Factory
+﻿namespace Transactions.Dao
 {
     public interface ITransactionDao
     {
         public int AddTransaction(string sourceAccountId, string targetAccountId, int transfertypeIdint, int value);
-        public void UpdaterTransaction(int transactionId);
+        public void UpdateTransaction(int transactionId,string status);
     }
 }

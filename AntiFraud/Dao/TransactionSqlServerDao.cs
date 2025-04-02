@@ -12,7 +12,7 @@ namespace AntiFraud.Dao
             _dataBase = dataBase;
         }
 
-        public List<Transaction> GetSourceTransactions(int transactionId, DateTime createdAt)
+        public List<int> GetSourceTransactions(int transactionId, DateTime createdAt)
         {
             _dataBase.OpenConnection();
 
@@ -20,14 +20,14 @@ namespace AntiFraud.Dao
             data.Add("@TransactionId", transactionId);
             data.Add("@CreatedAt", createdAt);
 
-            List<Transaction> transactions = _dataBase.ExecuteTableQuery<Transaction>("EXEC GetSourceTransactions @TransactionId, @createdAt");
+            List<int> transactions = _dataBase.ExecuteTableQuery<int>("EXEC GetSourceTransactions @TransactionId, @createdAt",data);
 
             _dataBase.CloseConnection();
 
             return transactions;
         }
 
-        public List<Transaction> GetTargetTransactions(int transactionId, DateTime createdAt)
+        public List<int> GetTargetTransactions(int transactionId, DateTime createdAt)
         {
             _dataBase.OpenConnection();
 
@@ -35,7 +35,7 @@ namespace AntiFraud.Dao
             data.Add("@TransactionId", transactionId);
             data.Add("@CreatedAt", createdAt);
 
-            List<Transaction> transactions = _dataBase.ExecuteTableQuery<Transaction>("EXEC GetTargetTransactions @TransactionId, @createdAt");
+            List<int> transactions = _dataBase.ExecuteTableQuery<int>("EXEC GetTargetTransactions @TransactionId, @createdAt",data);
 
             _dataBase.CloseConnection();
 

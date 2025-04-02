@@ -20,8 +20,9 @@ namespace AntiFraud.BusinessLogic
         {
             TransactionRuleKafka.StartListeningFromTransactionMessages(response =>
             {
-                _rule = new TransactionRule(response.ExternalTransactionId, response.CreatedAt, _factory.CreateTransactionRuleDao())
-                this.IsFraud();
+                _rule = new TransactionRule(response.ExternalTransactionId, response.CreatedAt, _factory.CreateTransactionRuleDao());
+                var validationResult = this.IsFraud();
+                TransactionRuleKafka.SendValidatedTransactionResult(validationResult);
             });
         }
 

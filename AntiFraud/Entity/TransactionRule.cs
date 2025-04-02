@@ -1,5 +1,6 @@
 ﻿using AntiFraud.Dao;
 using AntiFraud.Dto;
+using AntiFraud.Factory;
 
 namespace AntiFraud.Entity
 {
@@ -18,12 +19,15 @@ namespace AntiFraud.Entity
         private int _TransactionValue;
 
         private ITransactionRuleDao _dao;
+        private TransactionRuleFactory _factory;
 
         public TransactionRule(int transactionId,DateTime createAt,ITransactionRuleDao dao)
         { 
             _TransactionId      = transactionId;
             _TransactionDate   = createAt;
             _dao =   dao;
+
+            _factory = new TransactionRuleFactory(DataBaseEngine.SqlServer);
 
             var rules = _dao.GetTransactionsRuleValues();
             _IndividualMaxAmount = rules.IndividualMaxAmount;
@@ -32,7 +36,9 @@ namespace AntiFraud.Entity
 
         private async void SetTransactionValues()
         {
-            Transaction transaction = new Transaction(_TransactionId);
+            Transaction transaction = new Transaction(_TransactionId,_factory.CreateTransactionDao());
+            transaction.CreateDate = _TransactionDate;
+
             Task<List<Transaction>> taskSources =  Task.Run(()=>transaction.GetSourceTransactions());
             Task<List<Transaction>> taskTargets =  Task.Run(()=>transaction.GetTargetTransactions());
 

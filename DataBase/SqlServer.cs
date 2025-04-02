@@ -31,12 +31,18 @@ public class SqlServer : IDataBase
         }
     }
 
-    public List<T> ExecuteTableQuery<T>(string query) where T : new()
+    public List<T> ExecuteTableQuery<T>(string query, Dictionary<string, object> parameters) where T : new()
     {
         List<T> results = new List<T>();
 
         using (SqlCommand command = new SqlCommand(query, this._connection))
         {
+            // Agregar parámetros al comando
+            foreach (var param in parameters)
+            {
+                command.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+            }
+
             using (SqlDataReader reader = command.ExecuteReader())
             {
                 while (reader.Read())

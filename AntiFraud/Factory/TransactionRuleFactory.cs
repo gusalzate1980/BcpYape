@@ -28,6 +28,15 @@ namespace AntiFraud.Factory
                 default: return new TransactionRuleSqlServerDao(this.CreateDataBaseEngine());
             }
         }
+
+        public ITransactionDao CreateTransactionDao()
+        {
+            switch (_engine)
+            {
+                case DataBaseEngine.SqlServer: return new TransactionSqlServerDao(this.CreateDataBaseEngine());
+                default: return new TransactionSqlServerDao(this.CreateDataBaseEngine());
+            }
+        }
     }
 
     public enum DataBaseEngine

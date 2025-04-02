@@ -16,10 +16,10 @@ namespace Transactions.Dao
             _dataBase.OpenConnection();
 
             Dictionary<string,object> data = new Dictionary<string,object>();
-            data.Add("sourceAccountId", sourceAccountId);
-            data.Add("targetAccountId", targetAccountId);
-            data.Add("transfertypeIdint", transfertypeId);
-            data.Add("value", value);
+            data.Add("@sourceAccountId", sourceAccountId);
+            data.Add("@targetAccountId", targetAccountId);
+            data.Add("@transfertypeIdint", transfertypeId);
+            data.Add("@value", value);
 
             int id = _dataBase.ExecuteScalarQuery<int>("EXEC AddTransaction @sourceAccountId,@targetAccountId,@transfertypeId,@value", data);
             

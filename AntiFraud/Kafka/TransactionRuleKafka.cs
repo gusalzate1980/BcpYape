@@ -45,5 +45,18 @@ namespace AntiFraud.Kafka
                 });
             }
         }
+
+        public static void SendValidatedTransactionResult(TransactionStatusDto result)
+        {
+            var config = new ProducerConfig { BootstrapServers = _kafkaBroker };
+            using (var producer = new ProducerBuilder<Null, TransactionStatusDto>(config).Build())
+            {
+                var message = new Message<Null, TransactionStatusDto>()
+                {
+                    Value = result
+                };
+                producer.Produce(_fromAntiFraudToTransactionTopic, message);
+            }
+        }
     }
 }

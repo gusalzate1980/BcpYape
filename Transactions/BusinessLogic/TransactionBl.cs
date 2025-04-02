@@ -40,6 +40,7 @@ namespace Transactions.BusinessLogic
         public void UpdateTransaction(ResponseTransactionAntiFraudDto dto)
         {
             _transaction = new Transaction(_factory.CreateTransactionDao(),dto.Id,dto.IsFraud);
+            _transaction.UpdateTransaction();
 
         }
     }

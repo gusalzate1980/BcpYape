@@ -8,21 +8,23 @@ namespace AntiFraud.BusinessLogic
     public class AntiFraudBl
     {
         TransactionRuleFactory _factory;
-        TransactionRule _rule; 
-        
-        public AntiFraudBl()
+        TransactionRule _rule;
+        private readonly TransactionRuleKafka _kafka;
+
+        public AntiFraudBl(TransactionRuleKafka kafka)
         {
+            _kafka = kafka;
             _factory = new TransactionRuleFactory(DataBaseEngine.SqlServer);
             StartListeningFromTransactionMessages();
         }
 
         private void StartListeningFromTransactionMessages()
         {
-            TransactionRuleKafka.StartListeningFromTransactionMessages(response =>
+            _kafka.StartListeningFromTransactionMessages(response =>
             {
                 _rule = new TransactionRule(response.ExternalTransactionId, response.CreatedAt, _factory.CreateTransactionRuleDao());
                 var validationResult = this.IsFraud();
-                TransactionRuleKafka.SendValidatedTransactionResult(validationResult);
+                _kafka.SendValidatedTransactionResult(validationResult);
             });
         }
 

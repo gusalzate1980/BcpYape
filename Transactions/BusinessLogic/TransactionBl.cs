@@ -10,9 +10,11 @@ namespace Transactions.BusinessLogic
     {
         private Transaction _transaction;
         private TransactionFactory _factory;
+        private readonly TransactionKafka _kafka;
 
-        public TransactionBl() 
+        public TransactionBl(TransactionKafka kafka) 
         {
+            _kafka = kafka;
             _factory = new TransactionFactory(DataBaseEngine.SqlServer);
             StartListeningForFraudResponses();
         }
@@ -24,14 +26,15 @@ namespace Transactions.BusinessLogic
 
             _transaction.AddTransaction();
 
-            TransactionKafka.SendTransaction(_transaction.TransactionId);
+            
+            _kafka.SendTransaction(_transaction.TransactionId);
 
             return _transaction.TransactionId;
         }
 
         private void StartListeningForFraudResponses()
         {
-            TransactionKafka.StartListeningForAntiFraudResponses(response => 
+            _kafka.StartListeningForAntiFraudResponses(response => 
             {
                 this.UpdateTransaction(response);
             });

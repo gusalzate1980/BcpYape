@@ -4,13 +4,13 @@ using static Confluent.Kafka.ConfigPropertyNames;
 
 namespace Transactions.Kafka
 {
-    public static class TransactionKafka
+    public class TransactionKafka
     {
         private static string _kafkaBroker = "localhost:9092";
         private static string _transactionToAntiFraudTopic = "transaction-to-anti-fraude-topic";
         private static string _fromAntiFraudToTransactionTopic = "anti-fraud-to-transaction-topic";
 
-        public static void SendTransaction(int transactionId)
+        public void SendTransaction(int transactionId)
         {
             var config = new ProducerConfig { BootstrapServers = _kafkaBroker };
             using (var producer = new ProducerBuilder<Null, AntifraudRequestValidationDto>(config).Build())
@@ -27,7 +27,7 @@ namespace Transactions.Kafka
             }
         }
 
-        public static void StartListeningForAntiFraudResponses(Action<ResponseTransactionAntiFraudDto> onMessageReceived)
+        public void StartListeningForAntiFraudResponses(Action<ResponseTransactionAntiFraudDto> onMessageReceived)
         {
             var config = new ConsumerConfig
             {

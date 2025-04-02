@@ -9,7 +9,7 @@ namespace AntiFraud.Kafka
         private static string _transactionToAntiFraudTopic = "transaction-to-anti-fraude-topic";
         private static string _fromAntiFraudToTransactionTopic = "anti-fraud-to-transaction-topic";
 
-        public static void StartListeningFromTransactionMessages(Action<AntifraudRequestValidationDto> onMessageReceived)
+        public void StartListeningFromTransactionMessages(Action<AntifraudRequestValidationDto> onMessageReceived)
         {
             var config = new ConsumerConfig
             {
@@ -46,7 +46,7 @@ namespace AntiFraud.Kafka
             }
         }
 
-        public static void SendValidatedTransactionResult(TransactionStatusDto result)
+        public void SendValidatedTransactionResult(TransactionStatusDto result)
         {
             var config = new ProducerConfig { BootstrapServers = _kafkaBroker };
             using (var producer = new ProducerBuilder<Null, TransactionStatusDto>(config).Build())
